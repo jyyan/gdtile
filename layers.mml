@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+==================================================
+               Cascadenik 圖層設定
+==================================================
+
+使用方式：
+* 編譯 mml, mss
+  ../bin/cascadenik-compile.py mapstyle.mml build/mapstyle.xml
+* 產生圖磚 (使用 nik2img.py)
+  * 範圍裁切法
+    * 大直橋周邊
+      ../bin/nik2img.py -b 121.542 25.078 121.545 25.075 \
+      -d 256 256 -f png256 -v \
+      build/mapstyle.xml build/taipei.png
+    * 全台北市
+      ../bin/nik2img.py -b 121.440 25.167 121.655 24.969 \
+      -d 256 256 -f png256 -v \
+      build/mapstyle.xml build/taipei.png
+  * 定點放大法
+    * 大直橋周邊
+      ../bin/nik2img.py -c 121.542 25.078 -z 16 \
+      -d 256 256 -f png256 -v \
+      build/mapstyle.xml build/taipei.png
+    * 全台北市 (約 Zoom 10~11 之間)
+      ../bin/nik2img.py -c 121.5475 25.068 -z 11 \
+      -d 256 256 -f png256 -v \
+      build/mapstyle.xml build/taipei.png
+
+注意事項：
+* 因為圖資只包含全台灣，因此 Zoom 0 的意思是全台灣，而不是全世界
+* 實際測試發現不論 mapnik 用 WGS84 還是 Web Mercator 繪圖，PostGIS 都需要使用 EPSG:4326 座標儲存
+* nik2img.py 使用上除了 -e 參數需要 Web Mercator 座標以外，其餘都用經緯度即可
+
+投影法：
+* EPSG:4326 +proj=longlat +datum=WGS84 +no_defs
+* EPSG:3857 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs
+*    900913 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs
+*     抄來的 +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over
+* 其中有 +over, +wktext 等微小差異，有空再研究
+-->
+
+<!DOCTYPE Map[
+  <!-- 主題 -->
+  <!ENTITY THEME "default">
+
+  <!-- PostGIS 連線參數 -->
+  <!ENTITY db_config "
+    <Parameter name='type'>postgis</Parameter>
+    <Parameter name='host'>127.0.0.1</Parameter>
+    <Parameter name='user'>osm</Parameter>
+    <Parameter name='password'>osm4326</Parameter>
+    <Parameter name='dbname'>osm</Parameter>
+  ">
+
+  <!-- 投影法 -->
+  <!ENTITY epsg4326 "+proj=longlat +datum=WGS84 +no_defs">
+  <!ENTITY epsg3857 "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs">
+  <!ENTITY epsg3857a "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over">
+  <!ENTITY epsg900913 "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs">
+]>
+
+<Map srs="&epsg3857a;" maximum-extent="13518638.9619,2871937.4529,13543685.8474,2896270.7928">
+
+  <Stylesheet src="style/&THEME;/ground.mss" />
+  <Stylesheet src="style/&THEME;/roads.mss" />
+  <Stylesheet src="style/&THEME;/name.mss" />
+
+  <!--
+  ==================================================
+                圖層 (底部的道路放前面)
+  ==================================================
+  -->
+
+  <!-- 陸地 (精細) -->
+  <Layer id="lands_hres" srs="&epsg3857a;">
+    <Datasource>
+      <Parameter name='type'>shape</Parameter>
+      <Parameter name='file'>../../osm-data/land-polygons-split-3857/land_polygons.shp</Parameter>
+    </Datasource>
+  </Layer>
+
+  <!-- 陸地 (效能) -->
+  <Layer id="lands_lres" srs="&epsg3857a;">
+    <Datasource>
+      <Parameter name='type'>shape</Parameter>
+      <Parameter name='file'>../../osm-data/simplified-land-polygons-complete-3857/simplified_land_polygons.shp</Parameter>
+    </Datasource>
+  </Layer>
+
+  <!-- 天然地貌 -->
+  <Datasource name="natural">
+    <Parameter name="table">
+      (
+        SELECT osm_id, name, "natural", landuse, water, waterway, way
+        FROM planet_osm_polygon WHERE
+          "natural" IS NOT NULL OR
+          waterway IS NOT NULL OR
+          landuse='forest'
+      ) grounds
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer id="natural"><Datasource base="natural" /></Layer>
+
+  <!-- 人造地貌 -->
+  <Datasource name="artificial">
+    <Parameter name="table">
+      (
+        SELECT osm_id, name, aeroway, amenity, landuse, leisure, building, surface, way
+        FROM planet_osm_polygon WHERE (
+          "natural" IS NULL AND
+          waterway IS NULL AND
+          boundary IS NULL AND
+          (landuse!='forest' OR landuse IS NULL)
+        ) ORDER BY z_order ASC
+      ) grounds
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer id="artificial"><Datasource base="artificial" /></Layer>
+
+  <!-- 湖 (避免被公園蓋掉) -->
+  <Datasource name="lakes">
+    <Parameter name="table">
+      (
+        SELECT osm_id, name, way
+        FROM planet_osm_polygon WHERE
+          "natural"='water' AND
+          (water!='river' OR water IS NULL)
+      ) grounds
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer id="lakes"><Datasource base="lakes" /></Layer>
+
+  <!-- 河川流域線 -->
+  <Datasource name="rivers">
+    <Parameter name="table">
+      (
+        SELECT osm_id, name, "natural", waterway, way
+        FROM planet_osm_line WHERE waterway='river'
+      ) grounds
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer id="rivers"><Datasource base="rivers" /></Layer>
+
+  <!-- 道路 -->
+  <Datasource name="roads">
+    <Parameter name="table">
+      (
+        SELECT * FROM planet_osm_line WHERE highway IN (
+          'footway', 'cycleway',
+          'service', 'unclassified', 'residential',
+          'tertiary_link' , 'tertiary',
+          'secondary_link', 'secondary',
+          'primary_link'  , 'primary',
+          'trunk_link'    , 'trunk',
+          'motorway_link' , 'motorway'
+        ) ORDER BY z_order ASC
+      ) roads
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer class="roads outline"><Datasource base="roads" /></Layer>
+  <Layer class="roads inline"><Datasource base="roads" /></Layer>
+
+  <!-- 台鐵/高鐵/捷運 -->
+  <Datasource name="rails">
+    <Parameter name="table">
+      (
+        SELECT * FROM planet_osm_line
+        WHERE railway IN ('rail','subway')
+        ORDER BY z_order ASC
+      ) rails
+    </Parameter> &db_config;
+  </Datasource>
+  <Layer class="rails outline"><Datasource base="rails" /></Layer>
+  <Layer class="rails inline"><Datasource base="rails" /></Layer>
+
+  <!-- 道路名稱 -->
+  <Layer class="roads name"><Datasource base="roads" /></Layer>
+  <Layer class="rails name"><Datasource base="rails" /></Layer>
+
+  <!-- 地貌名稱 -->
+  <Layer class="rivers name"><Datasource base="rivers" /></Layer>
+  <Layer class="natural name"><Datasource base="natural" /></Layer>
+  <Layer class="artificial name"><Datasource base="artificial" /></Layer>
+
+</Map>

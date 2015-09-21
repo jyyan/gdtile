@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8" />
+<title>鬼島圖磚</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script>
+var map;
+
+$(document).ready(function() {
+	// 瀏覽器尺寸異動處理
+	$(window).on("resize", function(e) { $("#map_suite").height(window.innerHeight-30); });
+	$(window).trigger("resize");
+
+	// 地圖最佳化常數
+	var FIXED     = 6;
+	var BBOX      = L.latLngBounds([21.5, 118.5], [25.5, 123.5]);
+	var TILE_SRC  = 'http://localhost:10080/default/{z}/{x}/{y}.png';
+	var TILE_ATTR = '圖資來源 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
+		'所有圖客, 授權方式 <a href="http://creativecommons.org/licenses/by-sa/2.0/tw/">姓名標示-相同方式分享 2.0</a>, ' +
+		'圖磚提供 &copy; <a href="https://github.com/OsmHackTW/tpe_bike_layer">小璋丸</a>'
+
+	// 使用上次記憶的位置開啟地圖
+	var center = JSON.parse(localStorage["map_center"]||"[25.078, 121.542]");
+	var zoom   = JSON.parse(localStorage["map_zoom"]||"16");
+
+	// 配置地圖
+	map = L.map('map').setView(center, zoom);
+	L.tileLayer(TILE_SRC, {attribution: TILE_ATTR, minZoom: 7, maxZoom: 20}).addTo(map);
+	map.setMaxBounds(BBOX);
+
+	// 地圖操作狀態同步到介面上
+	map.syncInfo = function(e) {
+		var z = this.getZoom();
+		var c = this.getCenter();
+		var lat = c.lat.toFixed(FIXED);
+		var lng = c.lng.toFixed(FIXED);
+		var msg = lng + ", " + lat;
+		$("#location").val(msg);
+		$("#zoom").val(z);
+		localStorage["map_zoom"] = JSON.stringify(z);
+		localStorage["map_center"] = JSON.stringify([lat,lng]);
+		if (z>=16) this.updatePois();
+
+		console.log();
+	};
+
+	// 地圖的移動與縮放處理
+	map.on('moveend', map.syncInfo);
+	map.on('zoomend', map.syncInfo);
+	map.fire('moveend');
+	map.fire('zoomend');
+
+	// 座標點一下就全選，方便複製用
+	$("#location").on('click', function(e) {
+		this.setSelectionRange(0, this.value.length);
+	});
+});
+</script>
+<style type="text/css">
+body { margin: 0; }
+
+#map_suite {
+	position: relative;
+	width: 100%;
+}
+
+#map {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#banner {
+	width: 100%;
+	height: 30px;
+	background: rgb(98,125,77);
+	background: linear-gradient(to bottom, rgba(77,98,125,1) 0%,rgba(31,59,8,1) 100%);
+	color: #fff;
+	font-size: 11pt;
+}
+
+#banner > div { float: right; margin: 6px 15px 0 0; }
+#location { width: 150px; }
+#zoom { width: 30px; }
+
+#location, #zoom {
+	height: 12px;
+	font-size: 8pt;
+	color: #555;
+}
+</style>
+</head>
+
+<body>
+<div id="map_suite">
+	<div id="map"></div>
+</div>
+<div id="banner">
+	<div>鬼島圖磚</div>
+	<div>位置：<input id="location"></div>
+	<div>縮放：<input id="zoom"></div>
+	<div>圖磚設計：
+		<select id="tile_style">
+			<option value="default">預設</option>
+		</select>
+	</div>
+</div>
+</body>
+
+</html>
