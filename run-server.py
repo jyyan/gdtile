@@ -1,11 +1,10 @@
 import os
+import os.path
+import sys
 from string import Template
 
-'''
-if [ ! -d build ]; then
-	mkdir build
-fi
-'''
+if not os.path.isdir('build'):
+	os.system('mkdir build')
 
 def write_file(filename, content):
 	f = open(filename, 'w')
@@ -31,5 +30,10 @@ for t in themes:
 cmd = 'rm -rf /tmp/stache'
 os.system(cmd)
 
-cmd = '../bin/uwsgi --http :10080 --wsgi-file gdtile.py'
+if len(sys.argv)>=2 and sys.argv[1]=='nginx':	
+	cmd = '../bin/uwsgi --ini uwsgi-nginx.ini'
+else:
+	cmd = '../bin/uwsgi --ini uwsgi-local.ini'
+
+#cmd = '../bin/uwsgi --http :10080 --wsgi-file gdtile.py'
 os.system(cmd)
