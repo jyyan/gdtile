@@ -10,9 +10,8 @@
 
 /* 分離海陸 */
 Map { map-bgcolor: #7ce; }
-#lands_lres {
-  polygon-fill: #f0f0f0;
-}
+#lands_lres[zoom<=12] { polygon-fill: #f0f0f0; }
+#lands_hres[zoom>=12] { polygon-fill: #f0f0f0; }
 
 /* ================================================== */
 /*                   各類自然景觀配色                   */

@@ -1,6 +1,8 @@
 .rivers.name name,
+/*
 .natural.name name,
 .artificial.name name,
+*/
 .roads.name name,
 .rails.name name
 {
@@ -29,7 +31,7 @@
 
 /* Zoom: 13 */
 .rivers.name[zoom>=13] name,
-.natural.name[zoom>=13] name,
+/* .natural.name[zoom>=13] name, */
 .roads.name[highway='cycleway'][zoom>=13] name,
 .rails.name[railway='subway'][zoom>=13] name
 {

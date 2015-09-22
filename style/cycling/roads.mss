@@ -64,9 +64,6 @@
 .roads.outline[highway='trunk'][zoom>=14]         { line-width: 6; }
 .roads.inline[highway='motorway'][zoom>=14],
 .roads.inline[highway='trunk'][zoom>=14]          { line-width: 4; }
-.roads.outline[highway='service'][zoom>=14],
-.roads.outline[highway='unclassified'][zoom>=14],
-.roads.outline[highway='residential'][zoom>=14]   { line-width: 1; }
 
 /* Zoom: 15 */
 .roads.outline[highway='motorway_link'][zoom>=15],
@@ -88,9 +85,9 @@
 .roads.outline[highway='service'][zoom>=15],
 .roads.outline[highway='unclassified'][zoom>=15],
 .roads.outline[highway='residential'][zoom>=15]     { line-width: 3; }
-.roads.inline[highway='service'][zoom>=15],
-.roads.inline[highway='unclassified'][zoom>=15],
-.roads.inline[highway='residential'][zoom>=15]      { line-width: 1; }
+.roads.outline[highway='service'][zoom>=15],
+.roads.outline[highway='unclassified'][zoom>=15],
+.roads.outline[highway='residential'][zoom>=15]      { line-width: 1; }
 .roads.outline[highway='footway'][zoom>=15]         { line-width: 1; }
 .roads.outline[highway='cycleway'][zoom>=10]   { line-width: 6; }
 .roads.inline[highway='cycleway'][zoom>=10]    { line-width: 4; }
