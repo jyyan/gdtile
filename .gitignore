@@ -1,3 +1,6 @@
+# 個人化檔案
+uwsgi-nginx.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
