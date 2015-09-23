@@ -45,3 +45,6 @@ sudo ./run-server.py nginx
 ```!bash
 open preview.html
 ```
+
+### 其他
+盾牌資料來源: https://commons.wikimedia.org/wiki/Category:Taiwan_highway_shields
