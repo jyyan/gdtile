@@ -45,7 +45,7 @@ sudo ./run-server.py nginx
 
 ### 預覽圖磚
 ```!bash
-open preview.html
+launch `http://127.0.0.1:10080`
 ```
 
 ### 其他
