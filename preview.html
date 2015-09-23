@@ -2,6 +2,8 @@
 <head>
 <meta charset="utf-8" />
 <title>鬼島圖磚</title>
+<meta property="og:image" content="/default/16/54894/28049.png" />
+<meta name="og:description" content="這是針對鬼島設計的 OSM 非官方圖磚" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -31,8 +33,8 @@ $(document).ready(function() {
 
 		var TILE_ATTR = '圖資來源 &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
 			'所有圖客, 授權方式 <a href="http://creativecommons.org/licenses/by-sa/2.0/tw/">姓名標示-相同方式分享 2.0</a>, ' +
-			'圖磚提供 &copy; <a href="https://github.com/OsmHackTW/tpe_bike_layer">小璋丸</a>'
-		var tile_url  = 'http://localhost:10080/{style}/{z}/{x}/{y}.png';
+			'圖磚提供 &copy; <a href="https://github.com/OsmHackTW/gdtile">歹丸怕虧地圖社群</a>'
+		var tile_url  = '/{style}/{z}/{x}/{y}.png';
 		layer = L.tileLayer(tile_url, {style: $(this).val(), attribution: TILE_ATTR, minZoom: 7, maxZoom: 18});
 		map.addLayer(layer);
 	};
