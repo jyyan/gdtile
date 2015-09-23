@@ -1,4 +1,4 @@
-#!../bin/python
+#!/usr/bin/env python
 # coding: utf-8
 
 import os
@@ -31,7 +31,7 @@ for t in themes:
 	layers = tpl.substitute(theme=t)
 	lyfile = 'build/%s.mml' % t
 	write_file(lyfile, layers)
-	cmd = '../bin/cascadenik-compile.py %s build/%s.xml' % (lyfile, t)
+	cmd = 'cascadenik-compile.py %s build/%s.xml' % (lyfile, t)
 	ret = os.system(cmd)
 	if ret!=0:
 		print(u'無法產生 mapnik XML 設定檔')
@@ -42,9 +42,9 @@ for t in themes:
 #os.system(cmd)
 
 # 用 uwsgi 啟動 TileStache
-if len(sys.argv)>=2 and sys.argv[1]=='nginx':	
-	cmd = '../bin/uwsgi --ini uwsgi-nginx.ini'
+if len(sys.argv)>=2 and sys.argv[1]=='nginx':
+	cmd = 'uwsgi --ini uwsgi-nginx.ini'
 else:
-	cmd = '../bin/uwsgi --ini uwsgi-local.ini'
+	cmd = 'uwsgi --ini uwsgi-local.ini'
 
 os.system(cmd)

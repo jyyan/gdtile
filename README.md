@@ -18,6 +18,8 @@
 
 ## 怎麼架？
 ### 前置作業
+you can read [INSTALL.md](INSTALL.md) there are some tips for install all dependency software/library and import osm data into PostGIS
+
 #### 單機模式
 ```!bash
 echo '127.0.0.1:5432:osm:osm:osm4326' > ~/.pgpass
