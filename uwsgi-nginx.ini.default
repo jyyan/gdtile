@@ -1,0 +1,9 @@
+[uwsgi]
+# 根據系統環境調整合適的值
+uid          = user
+chown-socket = www-data
+# 以下不需要改
+socket       = /tmp/gdtile.sock
+master       = true
+process      = 10
+wsgi-file    = gdtile.py
