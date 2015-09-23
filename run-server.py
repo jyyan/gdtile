@@ -17,7 +17,6 @@ def read_file(filename):
 	f.close()
 	return c
 
-
 tpl = Template(read_file('layers.mml'))
 themes = ['default', 'cycling']
 for t in themes:
@@ -27,8 +26,8 @@ for t in themes:
 	cmd = '../bin/cascadenik-compile.py %s build/%s.xml' % (lyfile, t)
 	os.system(cmd)
 
-cmd = 'rm -rf /tmp/stache'
-os.system(cmd)
+#cmd = 'rm -rf /tmp/stache'
+#os.system(cmd)
 
 if len(sys.argv)>=2 and sys.argv[1]=='nginx':	
 	cmd = '../bin/uwsgi --ini uwsgi-nginx.ini'
