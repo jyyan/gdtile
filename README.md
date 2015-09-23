@@ -4,7 +4,9 @@
 ## 系統需求
 ### 軟體
 * Python 2.7
+* virtualenv
 * cascadenik
+* Pillow
 * mapnik2
 * TileStache
 * uwsgi
@@ -15,11 +17,35 @@
 * 海岸線輪廓圖資 *.shp 格式
 
 ## 怎麼架？
-啟動圖磚服務
+### 前置作業
+#### 單機模式
 ```!bash
-./run-server.sh
+echo '127.0.0.1:5432:osm:osm:osm4326' > ~/.pgpass
 ```
-預覽圖磚
+
+#### nginx 模式
+```!bash
+echo '127.0.0.1:5432:osm:osm:osm4326' > ~/.pgpass
+sudo cp ~/.pgpass ~root/
+cp uwsgi-nginx.ini.default uwsgi-nginx.ini
+```
+
+### 啟動圖磚服務
+#### 單機模式
+```!bash
+./run-server.py
+```
+
+#### nginx 模式
+```!bash
+sudo ./run-server.py nginx
+```
+
+### 預覽圖磚
 ```!bash
 open preview.html
 ```
+
+### 其他
+* 盾牌資料來源: https://commons.wikimedia.org/wiki/Category:Taiwan_highway_shields
+* 建立圖資環境: http://wiki.openstreetmap.org/wiki/Zh-hant:Develop
