@@ -83,7 +83,13 @@ sudo apt-get install postgresql postgresql-contrib postgis postgresql-9.4-postgi
 ```
 notice :
 modify `/etc/postgresql/9.*/main/pg_hba.conf` or `/etc/postgresql/pg_hba.conf` change the connect opt. from peer to md5 at the row : `local  all all peer`,
+
 and edit `/etc/postgresql/9.*/main/postgresql.conf` or `/etc/postgresql/postgresql.conf` , remove the hash flag from the `#listen_addresses = 'localhost'` line , and must re check the listening port is as default number `5432`
+
+at last , restart the `postgresql` service
+```sh
+sudo service postgresql restart
+```
 
 ###Create database
 ```sh
