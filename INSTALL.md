@@ -5,7 +5,7 @@ Note: this INSTALL document is test and build under `Ubuntu 12.04` , would like 
 install mapnik2
 -------------------------------
 
-ref: https://github.com/mapnik/mapnik/wiki/UbuntuInstallation
+ref: [Mapnik2 Installation](https://github.com/mapnik/mapnik/wiki/UbuntuInstallation)
 
 **Mapnik v2.3.x**
 This is the nightly build of the upcoming 2.3.0 release
@@ -99,7 +99,7 @@ sudo -u postgres createdb --encoding=UTF8 --owner=osm
 ```
 
 import initial db table ref. the following document , must notice your OS version
-ref: http://wiki.openstreetmap.org/wiki/PostGIS/Installation#Create_database
+ref: [Create_database](http://wiki.openstreetmap.org/wiki/PostGIS/Installation#Create_database)
 
 ```sh
 # Create database & user `osm` as password `osm4326`
@@ -143,7 +143,7 @@ osm2pgsql --create --cache 800 --hstore --database osm -l -U osm -W -S /usr/shar
 Test your environment
 ------------------------------
 
-ref. [http://wiki.openstreetmap.org/wiki/Zh-hant:mapnik_starter](getting start with nik2img)
+ref. [getting start with nik2img](http://wiki.openstreetmap.org/wiki/Zh-hant:mapnik_starter)
 
 using nik2img for check your import map information and connect PostgreSQL/PostGIS is success or not.
 
@@ -161,9 +161,9 @@ nik2img.py mapstyle-dazhi.xml dazhi-bridge.png -f png256 -b 121.54432 25.07480 1
 
 Most Referance
 ------------------------------
-1. [http://download.geofabrik.de/asia/taiwan.html](lastest Taiwan map).
-1. [https://gist.github.com/pnorman/6739765](Manually building a tile server)
-1. [http://www.slideshare.net/MarcHuang1/osm-installation-en](Open Street Map Installation Tutorial)
-1. [http://wiki.openstreetmap.org/wiki/Zh-hant:build_your_own_lab_ubuntu](build your own lab ubuntu)
+1. [lastest Taiwan map](http://download.geofabrik.de/asia/taiwan.html).
+1. [Manually building a tile server](https://gist.github.com/pnorman/6739765)
+1. [Open Street Map Installation Tutorial](http://www.slideshare.net/MarcHuang1/osm-installation-en)
+1. [build your own lab ubuntu](http://wiki.openstreetmap.org/wiki/Zh-hant:build_your_own_lab_ubuntu)
 
 
