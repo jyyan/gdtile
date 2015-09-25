@@ -129,8 +129,15 @@ osm2pgsql --create --cache 800 --hstore --database osm -l -U osm -W -S /usr/shar
 
 # need typing the password of user `osm`
 # please change the osm filename `taiwan-latest.osm.bz2` with what you have download from osm data source
-# notice : at ubuntu 12.04 , the osm2pgsql version donot support the osm file type `pbf` , so that you must using `bz2` or other one.
-#
+# notice : at ubuntu 12.04 , the osm2pgsql version donot support the osm file type `osm.pbf` , so that you must using `osm.bz2` or other one.
+# but i found that the `osm.bz2` format database donot have some table column such like `water and surface`, so we have better install last version osm2pgsql with
+
+sudo add-apt-repository ppa:kakrueger/openstreetmap
+sudo apt-get update
+sudo apt-get --no-install-recommends install -y osm2pgsql
+
+# now we can import `osm.pbf` data
+osm2pgsql --create --cache 800 --hstore --database osm -l -U osm -W -S /usr/share/osm2pgsql/default.style taiwan-latest.osm.pbf
 ```
 
 Test your environment
@@ -152,5 +159,11 @@ nik2img.py mapstyle-dazhi.xml dazhi-bridge.png -f png256 -b 121.54432 25.07480 1
 
 ```
 
+Most Referance
+------------------------------
+1. [http://download.geofabrik.de/asia/taiwan.html](lastest Taiwan map).
+1. [https://gist.github.com/pnorman/6739765](Manually building a tile server)
+1. [http://www.slideshare.net/MarcHuang1/osm-installation-en](Open Street Map Installation Tutorial)
+1. [http://wiki.openstreetmap.org/wiki/Zh-hant:build_your_own_lab_ubuntu](build your own lab ubuntu)
 
 
